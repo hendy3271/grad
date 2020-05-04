@@ -200,7 +200,8 @@ class Variable(float):
         # dx/da = b^a*ln(b), dx/db = a*b^(a-1)
         a, b = self.parents[0], self.parents[1]
         from math import log
-        gradients = [b**(a)*log(b), a*b**(a-1)]
+        log_b = 0. if abs(b) < 1e-10 else log(b)
+        gradients = [b**(a)*log_b, a*b**(a-1)]
         return zip(self.parents, gradients)
 
     @method_overload
