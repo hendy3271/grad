@@ -121,6 +121,15 @@ class Variable(float):
         gradients = [float(self.parents[1]), float(self.parents[0])]
         return zip(self.parents, gradients)
 
+    def __dtruediv__(self):
+        # x is this variable
+        # a, b are parent one and two
+        # x = a / b
+        # dx/da = 1/b, dx/db = -a/b/b
+        a, b = self.parents[0], self.parents[1]
+        gradients = [float(1/b), float(-a/b/b)]
+        return zip(self.parents, gradients)
+
     def __dradd__(self):
         return self.__dadd__()
 
@@ -134,6 +143,15 @@ class Variable(float):
 
     def __drmul__(self):
         return self.__dmul__()
+
+    def __drtruediv__(self):
+        # x is this variable
+        # a, b are parent one and two
+        # x = b / a
+        # dx/da = -b/a/a, dx/db = 1/a
+        a, b = self.parents[0], self.parents[1]
+        gradients = [float(-b/a/a), float(1/a)]
+        return zip(self.parents, gradients)
 
     def __str__(self):
         return '_' + super().__str__()
