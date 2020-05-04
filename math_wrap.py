@@ -6,7 +6,7 @@ min_, max_ = min, max
 sin_ = sin
 cos_ = cos
 
-sin = simple_primitive(sin_, [cos])
+sin = simple_primitive(sin_, [lambda x: cos(x)])
 cos = simple_primitive(cos_, [lambda x: -sin(x)])
 
 exp_ = exp
