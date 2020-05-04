@@ -23,7 +23,7 @@ def grad(func, arg=0):
         # Reverse pass
         gradient = trace(value, var)
 
-        return value, gradient
+        return float(value), gradient
     dfunc.__isgrad__ = True
     return dfunc
 
@@ -85,7 +85,7 @@ class Variable(float):
                 d_parents = [args[0]]
                 d_operation = 'func'
                 d_gradients = [1.]
-                
+
         self.parents = kwargs.pop('parents', d_parents)
         self.operation = kwargs.pop('operation', d_operation)
         self.gradients = kwargs.pop('gradients', d_gradients)
