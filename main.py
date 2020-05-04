@@ -1,6 +1,7 @@
 from grad import grad
+from math_wrap import sin, cos, sqrt, exp
 
-y = lambda x: abs(-x*(x**2 + 5*x - 2)/(3**x))
+y = lambda x: exp(sqrt(abs(-x*cos(x**2-x))))/(3**x)
 dydx = grad(y)
 
 h = 1.e-7
