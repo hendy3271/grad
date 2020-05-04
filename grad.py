@@ -57,18 +57,18 @@ class Variable(float):
     @operation_overload
     def __mul__(self, x):
         pass
-    @operation_overload
-    def __floordiv__(self, x):
-        pass
+    # @operation_overload
+    # def __floordiv__(self, x):
+    #     pass
     @operation_overload
     def __truediv__(self, x):
         pass
-    @operation_overload
-    def __mod__(self, x):
-        pass
-    @operation_overload
-    def __divmod__(self, x):
-        pass
+    # @operation_overload
+    # def __mod__(self, x):
+    #     pass
+    # @operation_overload
+    # def __divmod__(self, x):
+    #     pass
     @operation_overload
     def __pow__(self, x):
         pass
