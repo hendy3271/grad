@@ -38,6 +38,16 @@ def operation_overload(method):
 
     return new_method
 
+def method_overload(method):
+    def new_method(self):
+        parents = [self]
+        
+        value = getattr(self.super, method.__name__)()
+
+        return Variable(value, parents=parents, operation=method.__name__)
+
+    return new_method
+
 class Variable(float):
     def __new__(self, *args, **kwargs):
         return super().__new__(self, *args)
@@ -171,6 +181,46 @@ class Variable(float):
         a, b = self.parents[0], self.parents[1]
         from math import log
         gradients = [float(b**(a)*log(b)), float(a*b**(a-1))]
+        return zip(self.parents, gradients)
+
+    @method_overload
+    def __neg__(self):
+        pass
+    @method_overload
+    def __pos__(self):
+        pass
+    @method_overload
+    def __abs__(self):
+        pass
+
+    def __dneg__(self):
+        # x is this variable
+        # a is parent
+        # x = -a
+        # dx/da = -1
+        a = self.parents[0]
+        from math import log
+        gradients = [float(-1.)]
+        return zip(self.parents, gradients)
+    
+    def __dpos__(self):
+        # x is this variable
+        # a is parent
+        # x = +a
+        # dx/da = 1
+        a = self.parents[0]
+        from math import log
+        gradients = [float(1.)]
+        return zip(self.parents, gradients)
+
+    def __dabs__(self):
+        # x is this variable
+        # a is parent
+        # x = a
+        # dx/da = 1 if a > 0 else -1
+        a = self.parents[0]
+        from math import log
+        gradients = [float(1 if a > 0 else -1)]
         return zip(self.parents, gradients)
 
     def __str__(self):
