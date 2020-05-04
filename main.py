@@ -1,45 +1,16 @@
 from grad import Variable, trace
 
-p = lambda a, b: print('a  = {a}, b  = {b}'.format(a=a, b=b))
-p_ = lambda a, b: print('a_ = {a}, b_ = {b}'.format(a=a, b=b))
+a = Variable(10)
+b = Variable(2)
 
-a = 10.
-a_ = Variable(10)
-b = a
-b_ = a_
+c = a*b
 
-p(a, b)
-p_(a_, b_)
-assert a == a_, b == b_
+c *= 5
 
-a = a + 1
-a_ = a_ + 1
+d = a * 5
 
-p(a, b)
-p_(a_, b_)
-assert a == a_, b == b_
+e = d*c
+f = c*d
 
-b += 1.
-b_ += 1.
-
-p(a, b)
-p_(a_, b_)
-assert a == a_, b == b_
-
-b = a*5
-b_ = a_*5
-
-p(a, b)
-p_(a_, b_)
-assert a == a_, b == b_
-
-a = a*b
-a_ = a_*b_
-
-p(a, b)
-p_(a_, b_)
-assert a == a_, b == b_
-
-trace(a)
-trace(a_)
-trace(b_)
+trace(e)
+trace(f)
