@@ -105,6 +105,14 @@ class Variable(float):
         gradients = [float(1.), float(1.)]
         return zip(self.parents, gradients)
 
+    def __dsub__(self):
+        # x is this variable
+        # a, b are parent one and two
+        # x = a - b
+        # dx/da = 1, dx/db = -1
+        gradients = [float(1.), float(-1.)]
+        return zip(self.parents, gradients)
+
     def __dmul__(self):
         # x is this variable
         # a, b are parent one and two
@@ -114,20 +122,18 @@ class Variable(float):
         return zip(self.parents, gradients)
 
     def __dradd__(self):
+        return self.__dadd__()
+
+    def __drsub__(self):
         # x is this variable
         # a, b are parent one and two
-        # x = a + b
-        # dx/da = 1, dx/db = 1
-        gradients = [float(1.), float(1.)]
+        # x = b - a
+        # dx/da = 1, dx/db = -1
+        gradients = [float(-1.), float(1.)]
         return zip(self.parents, gradients)
 
     def __drmul__(self):
-        # x is this variable
-        # a, b are parent one and two
-        # x = a * b
-        # dx/da = b, dx/db = a
-        gradients = [float(self.parents[1]), float(self.parents[0])]
-        return zip(self.parents, gradients)
+        return self.__dmul__()
 
     def __str__(self):
         return '_' + super().__str__()
