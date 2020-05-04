@@ -81,18 +81,18 @@ class Variable(float):
     @operation_overload
     def __rmul__(self, x):
         pass
-    @operation_overload
-    def __rfloordiv__(self, x):
-        pass
+    # @operation_overload
+    # def __rfloordiv__(self, x):
+    #     pass
     @operation_overload
     def __rtruediv__(self, x):
         pass
-    @operation_overload
-    def __rmod__(self, x):
-        pass
-    @operation_overload
-    def __rdivmod__(self, x):
-        pass
+    # @operation_overload
+    # def __rmod__(self, x):
+    #     pass
+    # @operation_overload
+    # def __rdivmod__(self, x):
+    #     pass
     @operation_overload
     def __rpow__(self, x):
         pass
@@ -130,6 +130,16 @@ class Variable(float):
         gradients = [float(1/b), float(-a/b/b)]
         return zip(self.parents, gradients)
 
+    def __dpow__(self):
+        # x is this variable
+        # a, b are parent one and two
+        # x = a ^ b
+        # dx/da = b*a^(b-1), dx/db = a^b*ln(a)
+        a, b = self.parents[0], self.parents[1]
+        from math import log
+        gradients = [float(b*a**(b-1)), float(a**(b)*log(b))]
+        return zip(self.parents, gradients)
+
     def __dradd__(self):
         return self.__dadd__()
 
@@ -151,6 +161,16 @@ class Variable(float):
         # dx/da = -b/a/a, dx/db = 1/a
         a, b = self.parents[0], self.parents[1]
         gradients = [float(-b/a/a), float(1/a)]
+        return zip(self.parents, gradients)
+    
+    def __drpow__(self):
+        # x is this variable
+        # a, b are parent one and two
+        # x = b ^ a
+        # dx/da = b^a*ln(b), dx/db = a*b^(a-1)
+        a, b = self.parents[0], self.parents[1]
+        from math import log
+        gradients = [float(b**(a)*log(b)), float(a*b**(a-1))]
         return zip(self.parents, gradients)
 
     def __str__(self):
