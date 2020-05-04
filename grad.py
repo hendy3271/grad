@@ -60,6 +60,9 @@ class Variable(float):
     pass
 
 def trace(variable):
+    if not isinstance(variable, Variable):
+        return
+    
     while True:
         print(variable , ' : ', variable.operation)
         if variable.parent is None:
