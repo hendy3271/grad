@@ -78,9 +78,17 @@ class Variable(float):
         return super().__new__(self, *args)
 
     def __init__(self, *args, **kwargs):
-        self.parents = kwargs.pop('parents', None)
-        self.operation = kwargs.pop('operation', None)
-        self.gradients = kwargs.pop('gradients', None)
+        d_parents, d_operation, d_gradients = None, None, None
+
+        if len(args) > 0:
+            if isinstance(args[0], Variable):
+                d_parents = [args[0]]
+                d_operation = 'func'
+                d_gradients = [1.]
+                
+        self.parents = kwargs.pop('parents', d_parents)
+        self.operation = kwargs.pop('operation', d_operation)
+        self.gradients = kwargs.pop('gradients', d_gradients)
         self.super = super()
         self.super.__init__()
 
