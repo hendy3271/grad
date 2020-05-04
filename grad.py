@@ -81,53 +81,37 @@ class Variable(float):
         self.super.__init__()
 
     @operation_overload
-    def __add__(self, x):
-        pass
+    def __add__(self, x): pass
     @operation_overload
-    def __sub__(self, x):
-        pass
+    def __sub__(self, x): pass
     @operation_overload
-    def __mul__(self, x):
-        pass
+    def __mul__(self, x): pass
     # @operation_overload
-    # def __floordiv__(self, x):
-    #     pass
+    # def __floordiv__(self, x): pass
     @operation_overload
-    def __truediv__(self, x):
-        pass
+    def __truediv__(self, x): pass
     # @operation_overload
-    # def __mod__(self, x):
-    #     pass
+    # def __mod__(self, x): pass
     # @operation_overload
-    # def __divmod__(self, x):
-    #     pass
+    # def __divmod__(self, x): pass
     @operation_overload
-    def __pow__(self, x):
-        pass
+    def __pow__(self, x): pass
     @operation_overload
-    def __radd__(self, x):
-        pass
+    def __radd__(self, x): pass
     @operation_overload
-    def __rsub__(self, x):
-        pass
+    def __rsub__(self, x): pass
     @operation_overload
-    def __rmul__(self, x):
-        pass
+    def __rmul__(self, x): pass
     # @operation_overload
-    # def __rfloordiv__(self, x):
-    #     pass
+    # def __rfloordiv__(self, x): pass
     @operation_overload
-    def __rtruediv__(self, x):
-        pass
+    def __rtruediv__(self, x): pass
     # @operation_overload
-    # def __rmod__(self, x):
-    #     pass
+    # def __rmod__(self, x): pass
     # @operation_overload
-    # def __rdivmod__(self, x):
-    #     pass
+    # def __rdivmod__(self, x): pass
     @operation_overload
-    def __rpow__(self, x):
-        pass
+    def __rpow__(self, x): pass
     
     def __dadd__(self):
         # x is this variable
@@ -206,14 +190,11 @@ class Variable(float):
         return zip(self.parents, gradients)
 
     @method_overload
-    def __neg__(self):
-        pass
+    def __neg__(self): pass
     @method_overload
-    def __pos__(self):
-        pass
+    def __pos__(self): pass
     @method_overload
-    def __abs__(self):
-        pass
+    def __abs__(self): pass
 
     def __dneg__(self):
         # x is this variable
