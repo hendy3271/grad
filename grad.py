@@ -51,9 +51,54 @@ class Variable(float):
         self.super = super()
         self.super.__init__()
 
-    @method_overload
+    @operation_overload
     def __add__(self, x):
-        return Variable(x, parent=self, operation='add')
+        pass
+    @operation_overload
+    def __sub__(self, x):
+        pass
+    @operation_overload
+    def __mul__(self, x):
+        pass
+    @operation_overload
+    def __floordiv__(self, x):
+        pass
+    @operation_overload
+    def __truediv__(self, x):
+        pass
+    @operation_overload
+    def __mod__(self, x):
+        pass
+    @operation_overload
+    def __divmod__(self, x):
+        pass
+    @operation_overload
+    def __pow__(self, x):
+        pass
+    @operation_overload
+    def __radd__(self, x):
+        pass
+    @operation_overload
+    def __rsub__(self, x):
+        pass
+    @operation_overload
+    def __rmul__(self, x):
+        pass
+    @operation_overload
+    def __rfloordiv__(self, x):
+        pass
+    @operation_overload
+    def __rtruediv__(self, x):
+        pass
+    @operation_overload
+    def __rmod__(self, x):
+        pass
+    @operation_overload
+    def __rdivmod__(self, x):
+        pass
+    @operation_overload
+    def __rpow__(self, x):
+        pass
     
     def __str__(self):
         return '_' + super().__str__()
