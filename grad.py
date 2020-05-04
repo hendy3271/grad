@@ -34,10 +34,13 @@ def primitive(grads):
             gradients = []
             parents = []
             
-            for arg, grad in zip(args, grads):
+            from itertools import count
+            for i, arg, grad in zip(count(), args, grads):
                 if isinstance(arg, Variable):
                     parents.append(arg)
-                    gradients.append(grad(*args))
+                    sargs = list(args)
+                    sargs[i] = float(arg)
+                    gradients.append(grad(*sargs))
 
             if len(parents) > 0:
                 return Variable(value, parents=parents, operation='func', gradients=gradients)
@@ -247,7 +250,7 @@ differential = lambda operation: operation[:2] + 'd' + operation[2:]
 def trace(variable, source, gradient=1.):
     accumulation = 0.
     if not isinstance(variable, Variable):
-        raise TypeError
+        return 0.
     elif variable is source:
         return gradient
     elif variable.operation is None:
