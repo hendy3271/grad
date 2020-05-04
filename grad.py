@@ -166,7 +166,8 @@ class Variable(float):
         # dx/da = b*a^(b-1), dx/db = a^b*ln(a)
         a, b = self.parents[0], self.parents[1]
         from math import log
-        gradients = [b*a**(b-1), a**(b)*log(b)]
+        log_b = 0. if abs(b) < 1e-10 else log(b)
+        gradients = [b*a**(b-1), a**(b)*log_b]
         return zip(self.parents, gradients)
 
     def __dradd__(self):
