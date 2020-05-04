@@ -37,11 +37,7 @@ def method_overload(method):
 def operation_overload(method):
     def new_method(self, *args, **kwargs):
         x = getattr(self.super, method.__name__)(*args, **kwargs)
-
-        operation = method(self, x)
-        if operation:
-            return operation
-        return x
+        return Variable(x, parent=self, operation=method.__name__)
 
     return new_method
 
