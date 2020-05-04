@@ -122,7 +122,7 @@ class Variable(float):
         # a, b are parent one and two
         # x = a + b
         # dx/da = 1, dx/db = 1
-        gradients = [float(1.), float(1.)]
+        gradients = [1., 1.]
         return zip(self.parents, gradients)
 
     def __dsub__(self):
@@ -130,7 +130,7 @@ class Variable(float):
         # a, b are parent one and two
         # x = a - b
         # dx/da = 1, dx/db = -1
-        gradients = [float(1.), float(-1.)]
+        gradients = [1., -1.]
         return zip(self.parents, gradients)
 
     def __dmul__(self):
@@ -138,7 +138,7 @@ class Variable(float):
         # a, b are parent one and two
         # x = a * b
         # dx/da = b, dx/db = a
-        gradients = [float(self.parents[1]), float(self.parents[0])]
+        gradients = [self.parents[1], self.parents[0]]
         return zip(self.parents, gradients)
 
     def __dtruediv__(self):
@@ -147,7 +147,7 @@ class Variable(float):
         # x = a / b
         # dx/da = 1/b, dx/db = -a/b/b
         a, b = self.parents[0], self.parents[1]
-        gradients = [float(1/b), float(-a/b/b)]
+        gradients = [1/b, -a/b/b]
         return zip(self.parents, gradients)
 
     def __dpow__(self):
@@ -157,7 +157,7 @@ class Variable(float):
         # dx/da = b*a^(b-1), dx/db = a^b*ln(a)
         a, b = self.parents[0], self.parents[1]
         from math import log
-        gradients = [float(b*a**(b-1)), float(a**(b)*log(b))]
+        gradients = [b*a**(b-1), a**(b)*log(b)]
         return zip(self.parents, gradients)
 
     def __dradd__(self):
@@ -168,7 +168,7 @@ class Variable(float):
         # a, b are parent one and two
         # x = b - a
         # dx/da = 1, dx/db = -1
-        gradients = [float(-1.), float(1.)]
+        gradients = [-1., 1.]
         return zip(self.parents, gradients)
 
     def __drmul__(self):
@@ -180,7 +180,7 @@ class Variable(float):
         # x = b / a
         # dx/da = -b/a/a, dx/db = 1/a
         a, b = self.parents[0], self.parents[1]
-        gradients = [float(-b/a/a), float(1/a)]
+        gradients = [-b/a/a, 1/a]
         return zip(self.parents, gradients)
     
     def __drpow__(self):
@@ -190,7 +190,7 @@ class Variable(float):
         # dx/da = b^a*ln(b), dx/db = a*b^(a-1)
         a, b = self.parents[0], self.parents[1]
         from math import log
-        gradients = [float(b**(a)*log(b)), float(a*b**(a-1))]
+        gradients = [b**(a)*log(b), a*b**(a-1)]
         return zip(self.parents, gradients)
 
     @method_overload
@@ -207,7 +207,7 @@ class Variable(float):
         # dx/da = -1
         a = self.parents[0]
         from math import log
-        gradients = [float(-1.)]
+        gradients = [-1.]
         return zip(self.parents, gradients)
     
     def __dpos__(self):
@@ -217,7 +217,7 @@ class Variable(float):
         # dx/da = 1
         a = self.parents[0]
         from math import log
-        gradients = [float(1.)]
+        gradients = [1.]
         return zip(self.parents, gradients)
 
     def __dabs__(self):
@@ -227,7 +227,7 @@ class Variable(float):
         # dx/da = 1 if a > 0 else -1
         a = self.parents[0]
         from math import log
-        gradients = [float(1 if a > 0 else -1)]
+        gradients = [1. if a > 0 else -1.]
         return zip(self.parents, gradients)
 
     def __str__(self):
