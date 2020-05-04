@@ -29,3 +29,11 @@ tester(y, x, h=1.e-6, name='sqrt')
 y = lambda x: log(x)
 x = 2.
 tester(y, x, h=1.e-6, name='log')
+
+y = lambda x: exp(x)
+x = 2.
+tester(y, x, h=1.e-6, name='exp')
+
+y = lambda x: var2(x, x)
+x = 2.
+tester(y, x, h=1.e-6, name='user primitive')
