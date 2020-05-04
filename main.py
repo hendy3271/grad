@@ -19,8 +19,8 @@ p(a, b)
 p_(a_, b_)
 assert a == a_, b == b_
 
-a += 1.
-a_ += 1.
+b += 1.
+b_ += 1.
 
 p(a, b)
 p_(a_, b_)
@@ -33,4 +33,13 @@ p(a, b)
 p_(a_, b_)
 assert a == a_, b == b_
 
+a = a*b
+a_ = a_*b_
+
+p(a, b)
+p_(a_, b_)
+assert a == a_, b == b_
+
+trace(a)
 trace(a_)
+trace(b_)
