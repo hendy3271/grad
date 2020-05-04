@@ -23,13 +23,26 @@ def grad(func, arg=0):
         return float(value), gradient
     return dfunc
 
-def grad_wrap(func, grad):
-    def wrapped_func(x):
-        value = func(x)
-        if isinstance(x, Variable):
-            return Variable(value, parents=[x], operation='func', gradient=grad(x))
-        return value
-    return wrapped_func
+def primitive(grads):
+    def wrapper(func):
+        def wrapped_func(*args):
+            value = func(*args)
+            gradients = []
+            parents = []
+            
+            for arg, grad in zip(args, grads):
+                if isinstance(arg, Variable):
+                    parents.append(arg)
+                    gradients.append(grad(*args))
+
+            if len(parents) > 0:
+                return Variable(value, parents=parents, operation='func', gradients=gradients)
+            return value
+        return wrapped_func
+    return wrapper
+
+def simple_primitive(func, grads):
+    return primitive(grads)(func)
 
 def operation_overload(method):
     def new_method(self, x):
@@ -63,7 +76,7 @@ class Variable(float):
     def __init__(self, *args, **kwargs):
         self.parents = kwargs.pop('parents', None)
         self.operation = kwargs.pop('operation', None)
-        self.gradient = kwargs.pop('gradient', None)
+        self.gradients = kwargs.pop('gradients', None)
         self.super = super()
         self.super.__init__()
 
@@ -250,18 +263,13 @@ def trace(variable, source, gradient=1.):
     operation = variable.operation
 
     if operation == 'func':
-        if isinstance(variable.gradient, float):
-            accumulation += gradient*trace(variable.parents[0], source, variable.gradient)
-        else:
-            return 0.
-        pass
+        iterable = zip(variable.parents, variable.gradients)
     else:
         operation = differential(operation)
-
         iterable = getattr(variable, operation)()
 
-        for parent, grd in iterable:
-            if isinstance(parent, Variable):
-                accumulation += gradient*trace(parent, source, grd)
+    for parent, grd in iterable:
+        if isinstance(parent, Variable):
+            accumulation += gradient*trace(parent, source, grd)
     
     return accumulation
