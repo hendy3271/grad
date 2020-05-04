@@ -18,21 +18,10 @@ def grad(func, arg=0):
         value = func(*args, **kwargs)
 
         # Reverse pass
-        gradient = trace.reverse(value)
+        gradient = trace(value, var)
 
-        return value.get_value(), gradient
+        return float(value), gradient
     return dfunc
-
-def method_overload(method):
-    def new_method(self, *args, **kwargs):
-        x = getattr(self.super, method.__name__)(*args, **kwargs)
-
-        operation = method(self, x)
-        if operation:
-            return operation
-        return x
-
-    return new_method
 
 def operation_overload(method):
     def new_method(self, x):
@@ -43,7 +32,7 @@ def operation_overload(method):
         if isinstance(x, Variable):
             parents.append(x)
         else:
-            parents.append(value)
+            parents.append(float(x))
 
         return Variable(value, parents=parents, operation=method.__name__)
 
@@ -108,23 +97,41 @@ class Variable(float):
     def __rpow__(self, x):
         pass
     
+    def __dadd__(self):
+        gradients = [float(1.), float(1.)]
+        return zip(self.parents, gradients)
+
+    def __dmul__(self):
+        gradients = [float(self.parents[1]), float(self.parents[0])]
+        return zip(self.parents, gradients)
+
+    def __dradd__(self):
+        gradients = [float(1.), float(1.)]
+        return zip(self.parents, gradients)
+
+    def __drmul__(self):
+        gradients = [float(self.parents[1]), float(self.parents[0])]
+        return zip(self.parents, gradients)
+
     def __str__(self):
         return '_' + super().__str__()
     pass
 
-def trace(variable, source, gradient=None):
-    if gradient is None:
-        gradient = float(variable)
+differential = lambda operation: operation[:2] + 'd' + operation[2:]
 
-    print(variable , ' : ', variable.operation)
+def trace(variable, source, gradient=1.):
+    accumulation = 0.
+    if variable is source:
+        return gradient
+    elif variable.operation is None:
+        return 0.
+    else:
+        operation = differential(variable.operation)
 
-    if variable.parents is None:
-        return
+    iterable = getattr(variable, operation)()
 
-    for parent in variable.parents:
-        if parent is source:
-            print('yay!')
-        elif isinstance(parent, Variable):
-            trace(parent, source)
-        else:
-            print(parent)
+    for parent, grd in iterable:
+        if isinstance(parent, Variable):
+            accumulation += gradient*trace(parent, source, grd)
+    
+    return accumulation
