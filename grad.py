@@ -15,12 +15,16 @@ def grad(func, arg=0):
             raise TypeError
 
         # Foward pass
-        value = func(*args, **kwargs)
+        if getattr(func, '__isgrad__', False):
+            _, value = func(*args, **kwargs)
+        else:
+            value = func(*args, **kwargs)
 
         # Reverse pass
         gradient = trace(value, var)
 
-        return float(value), gradient
+        return value, gradient
+    dfunc.__isgrad__ = True
     return dfunc
 
 def primitive(grads):
