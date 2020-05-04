@@ -35,15 +35,13 @@ def primitive(grads):
             parents = []
             
             from itertools import count
-            for i, arg, grad in zip(count(), args, grads):
+            for i, arg, gradient in zip(count(), args, grads):
                 if isinstance(arg, Variable):
                     parents.append(arg)
-                    sargs = list(args)
-                    sargs[i] = float(arg)
-                    gradients.append(grad(*sargs))
+                    gradients.append(gradient)
 
-            if len(parents) > 0:
-                return Variable(value, parents=parents, operation='func', gradients=gradients)
+            if len(parents) > 0 and len(args) > 0:
+                return Variable(value, parents=parents, operation='func', gradients=(args, gradients))
             return value
         return wrapped_func
     return wrapper
@@ -87,7 +85,7 @@ class Variable(float):
             if isinstance(args[0], Variable):
                 d_parents = [args[0]]
                 d_operation = 'func'
-                d_gradients = [1.]
+                d_gradients = [[], [lambda *args: 1.]]
 
         self.parents = kwargs.pop('parents', d_parents)
         self.operation = kwargs.pop('operation', d_operation)
@@ -261,13 +259,18 @@ def trace(variable, source, gradient=1.):
     operation = variable.operation
 
     if operation == 'func':
-        iterable = zip(variable.parents, variable.gradients)
+        args, gradients = variable.gradients
+        iterable = zip(variable.parents, gradients)
+
+        for parent, grd in iterable:
+            if isinstance(parent, Variable):
+                accumulation += gradient*trace(parent, source, grd(*args))
     else:
         operation = differential(operation)
         iterable = getattr(variable, operation)()
 
-    for parent, grd in iterable:
-        if isinstance(parent, Variable):
-            accumulation += gradient*trace(parent, source, grd)
+        for parent, grd in iterable:
+            if isinstance(parent, Variable):
+                accumulation += gradient*trace(parent, source, grd)
     
     return accumulation
