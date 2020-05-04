@@ -238,7 +238,9 @@ differential = lambda operation: operation[:2] + 'd' + operation[2:]
 
 def trace(variable, source, gradient=1.):
     accumulation = 0.
-    if variable is source:
+    if not isinstance(variable, Variable):
+        raise TypeError
+    elif variable is source:
         return gradient
     elif variable.operation is None:
         return 0.
