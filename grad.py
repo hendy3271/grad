@@ -56,7 +56,7 @@ class Variable(float):
         return Variable(x, parent=self, operation='add')
     
     def __str__(self):
-        return 'V' + super().__str__()
+        return '_' + super().__str__()
     pass
 
 def trace(variable):
