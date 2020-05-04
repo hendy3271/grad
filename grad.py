@@ -54,7 +54,7 @@ class Variable(float):
         return super().__new__(self, *args)
 
     def __init__(self, *args, **kwargs):
-        self.parent = kwargs.pop('parent', None)
+        self.parents = kwargs.pop('parents', None)
         self.operation = kwargs.pop('operation', None)
         self.super = super()
         self.super.__init__()
@@ -112,12 +112,19 @@ class Variable(float):
         return '_' + super().__str__()
     pass
 
-def trace(variable):
-    if not isinstance(variable, Variable):
+def trace(variable, source, gradient=None):
+    if gradient is None:
+        gradient = float(variable)
+
+    print(variable , ' : ', variable.operation)
+
+    if variable.parents is None:
         return
-    
-    while True:
-        print(variable , ' : ', variable.operation)
-        if variable.parent is None:
-            break
-        variable = variable.parent
+
+    for parent in variable.parents:
+        if parent is source:
+            print('yay!')
+        elif isinstance(parent, Variable):
+            trace(parent, source)
+        else:
+            print(parent)
