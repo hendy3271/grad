@@ -1,4 +1,4 @@
-from tester import tester2 as tester
+from tester import tester
 from grad import primitive
 from math_wrap import sin, cos, sqrt, exp, log
 
@@ -6,34 +6,36 @@ from math_wrap import sin, cos, sqrt, exp, log
 def var2(x, y):
      return 2.*x - 3.*y
 
+N = 3
+
 y = lambda x: x**2
 x = 2.
-tester(y, x, h=1.e-6, name='square')
+tester(y, x, h=1.e-6, name='square', n=N)
 
 y = lambda x: abs(x)
 x = 2.
-tester(y, x, h=1.e-6, name='abs')
+tester(y, x, h=1.e-6, name='abs', n=N)
 
 y = lambda x: cos(x)
 x = 2.
-tester(y, x, h=1.e-6, name='cos')
+tester(y, x, h=1.e-6, name='cos', n=N)
 
 y = lambda x: sin(x)
 x = 2.
-tester(y, x, h=1.e-6, name='sin')
+tester(y, x, h=1.e-6, name='sin', n=N)
 
 y = lambda x: sqrt(x)
 x = 2.
-tester(y, x, h=1.e-6, name='sqrt')
+tester(y, x, h=1.e-6, name='sqrt', n=N)
 
 y = lambda x: log(x)
 x = 2.
-tester(y, x, h=1.e-6, name='log')
+tester(y, x, h=1.e-6, name='log', n=N)
 
 y = lambda x: exp(x)
 x = 2.
-tester(y, x, h=1.e-6, name='exp')
+tester(y, x, h=1.e-6, name='exp', n=N)
 
 y = lambda x: var2(x, x)
 x = 2.
-tester(y, x, h=1.e-6, name='user primitive')
+tester(y, x, h=1.e-6, name='user primitive', n=N)
