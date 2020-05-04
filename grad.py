@@ -62,3 +62,10 @@ class Variable(float):
     def __str__(self):
         return 'V' + super().__str__()
     pass
+
+def trace(variable):
+    while True:
+        print(variable , ' : ', variable.operation)
+        if variable.parent is None:
+            break
+        variable = variable.parent

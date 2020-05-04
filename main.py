@@ -1,5 +1,4 @@
-from grad import Variable
-from typing import overload
+from grad import Variable, trace
 
 p = lambda a, b: print('a  = {a}, b  = {b}'.format(a=a, b=b))
 p_ = lambda a, b: print('a_ = {a}, b_ = {b}'.format(a=a, b=b))
@@ -33,13 +32,5 @@ b_ = a_*5
 p(a, b)
 p_(a_, b_)
 assert a == a_, b == b_
-
-def trace(variable):
-    while True:
-        print(variable , ' : ', variable.operation)
-        if variable.parent is None:
-            break
-        variable = variable.parent
-        
 
 trace(a_)
