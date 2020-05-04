@@ -35,9 +35,17 @@ def method_overload(method):
     return new_method
 
 def operation_overload(method):
-    def new_method(self, *args, **kwargs):
-        x = getattr(self.super, method.__name__)(*args, **kwargs)
-        return Variable(x, parent=self, operation=method.__name__)
+    def new_method(self, x):
+        parents = [self]
+        
+        value = getattr(self.super, method.__name__)(x)
+
+        if isinstance(x, Variable):
+            parents.append(x)
+        else:
+            parents.append(value)
+
+        return Variable(value, parents=parents, operation=method.__name__)
 
     return new_method
 
