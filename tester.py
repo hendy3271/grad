@@ -31,7 +31,7 @@ def tester2(y, x, h=1.e-11, name=None):
     ddydxdx = grad(dydx)
 
     dydx_cg = center_grad(y, h)
-    ddydxdx_cg = center_dgrad(y, h)
+    ddydxdx_cg = center_grad(lambda x: dydx(x)[1], h)
 
     y_x, dydx_x = dydx(x)
     dydx_x_, ddydxdx_x = ddydxdx(x)
