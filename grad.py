@@ -98,18 +98,34 @@ class Variable(float):
         pass
     
     def __dadd__(self):
+        # x is this variable
+        # a, b are parent one and two
+        # x = a + b
+        # dx/da = 1, dx/db = 1
         gradients = [float(1.), float(1.)]
         return zip(self.parents, gradients)
 
     def __dmul__(self):
+        # x is this variable
+        # a, b are parent one and two
+        # x = a * b
+        # dx/da = b, dx/db = a
         gradients = [float(self.parents[1]), float(self.parents[0])]
         return zip(self.parents, gradients)
 
     def __dradd__(self):
+        # x is this variable
+        # a, b are parent one and two
+        # x = a + b
+        # dx/da = 1, dx/db = 1
         gradients = [float(1.), float(1.)]
         return zip(self.parents, gradients)
 
     def __drmul__(self):
+        # x is this variable
+        # a, b are parent one and two
+        # x = a * b
+        # dx/da = b, dx/db = a
         gradients = [float(self.parents[1]), float(self.parents[0])]
         return zip(self.parents, gradients)
 
