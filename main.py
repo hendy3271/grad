@@ -1,6 +1,6 @@
 from grad import grad
 
-y = lambda x: (x**2 + 5*x - 2)/(3**x)
+y = lambda x: abs(-x*(x**2 + 5*x - 2)/(3**x))
 dydx = grad(y)
 
 h = 1.e-7
