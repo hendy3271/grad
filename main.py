@@ -1,4 +1,4 @@
-from tester import tester
+from tester import tester2 as tester
 from grad import primitive
 from math_wrap import sin, cos, sqrt, exp, log
 
@@ -14,18 +14,18 @@ y = lambda x: abs(x)
 x = 2.
 tester(y, x, h=1.e-6, name='abs')
 
-y = lambda x: log(x)
-x = 2.
-tester(y, x, h=1.e-6, name='log')
-
 y = lambda x: cos(x)
 x = 2.
 tester(y, x, h=1.e-6, name='cos')
 
 y = lambda x: sin(x)
-x = 1.
+x = 2.
 tester(y, x, h=1.e-6, name='sin')
 
 y = lambda x: sqrt(x)
 x = 2.
 tester(y, x, h=1.e-6, name='sqrt')
+
+y = lambda x: log(x)
+x = 2.
+tester(y, x, h=1.e-6, name='log')
