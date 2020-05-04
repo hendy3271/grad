@@ -23,7 +23,7 @@ def grad(func, arg=0):
         # Reverse pass
         gradient = trace(value, var)
 
-        return float(value), gradient
+        return value, gradient
     dfunc.__isgrad__ = True
     return dfunc
 
