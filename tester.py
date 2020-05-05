@@ -1,4 +1,4 @@
-from grad import grad, primitive, Variable
+from grad import grad, primitive
 center_grad = lambda y, h: lambda x: (y(x+h) - y(x-h))/(2*h)
 center_dgrad = lambda y, h: lambda x: (y(x+h) -2*y(x) + y(x-h))/(h*h)
 
