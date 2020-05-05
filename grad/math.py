@@ -1,5 +1,5 @@
 from math import *
-from grad import Variable, primitive, simple_primitive
+from .grad import Variable, primitive, simple_primitive
 
 min_, max_ = min, max
 
