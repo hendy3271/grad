@@ -1,18 +1,18 @@
 from .variables import Variable
 
-def grad(func, arg=0):
+def grad(func, argnum=0):
     def dfunc(*args, **kwargs):
-        if isinstance(arg, (int, float)):
+        if isinstance(argnum, (int, float)):
             # wrap args[arg]
             args=list(args)
-            var = Variable(args[arg])
-            args[arg] = var
+            var = args[argnum]
+            if isinstance(var, (list, tuple)):
+                for i, v in enumerate(var):
+                    var[i] = Variable(v)
+            if isinstance(var, float):
+                var = Variable(args[argnum])
+            args[argnum] = var
             pass 
-        elif isinstance(arg, str):
-            # wrap kwargs[arg]
-            var = Variable(args[arg])
-            kwargs[arg] = var
-            pass
         else:
             raise TypeError
 
@@ -23,7 +23,12 @@ def grad(func, arg=0):
             value = func(*args, **kwargs)
 
         # Reverse pass
-        gradient = differentiate(value, var)
+        if isinstance(value, (list, tuple)):
+            gradient = []
+            for vr, vl in zip(var, value):
+                gradient.append(differentiate(vl, vr))
+        else:
+            gradient = differentiate(value, var)
 
         return value, gradient
     dfunc.__isgrad__ = True
