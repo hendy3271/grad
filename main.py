@@ -1,4 +1,4 @@
-from math import sin, pi, atan2
+from grad.math import sin, pi, atan2
 from matplotlib.pyplot import plot, show, legend
 
 def linspace(start, stop, N = 50):
@@ -12,27 +12,27 @@ x = list(linspace(-pi, pi))
 # and vectorize grad
 def vectorize(func):
     def vfunc(*args):
-        maximum = 0.
-        for arg in args:
+        args=list(args)
+        maximum=0.
+        for i, arg in enumerate(args):
             if isinstance(arg, (list, tuple)):
                 maximum = max(maximum, len(arg))
-
-        if maximum == 0.:
-            return func(*args)
-
-        sargs = []
-        for arg in args:
-            if isinstance(arg, (list, tuple)):
-                sargs.append(list(arg))
+                args[i] = arg
             else:
                 from itertools import cycle
-                sargs.append(cycle([arg]))
+                args[i] = cycle([arg])
 
         vector = []
 
-        for vargs in zip(*sargs):
+        for vargs in zip(*args):
             vector.append(func(*vargs))
-        return vector
+            if maximum == 0.:
+                break
+        else:
+            return vector
+        return vector[0]
+        
+    vfun.__vectorized__ = True
     return vfunc
 
 @vectorize
@@ -45,9 +45,9 @@ def relu(x):
         return 0.
     return x
 
-vsin = vectorize(sin)
+sin, sin_ = vectorize(sin), sin
 
-plot(x, vsin(x), label = 'sin(x)')
+plot(x, sin(x), label = 'sin(x)')
 plot(x, square(relu(x)), label = 'square(relu(x))')
 legend()
 show()
