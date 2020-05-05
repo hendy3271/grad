@@ -15,26 +15,6 @@ def relu(x):
         return 0.
     return x
 
-@vectorize
-def mul(x, y):
-    return x*y
-
-@vectorize
-def div(x, y):
-    return x/y
-
-@vectorize
-def add(x, y):
-    return x+y
-
-@vectorize
-def sub(x, y):
-    return x-y
-
-@vectorize
-def neg(x):
-    return -x
-
 tanh, tanh_ = vectorize(tanh), tanh
 exp, exp_ = vectorize(exp), exp
 sin, sin_ = vectorize(sin), sin
@@ -50,7 +30,9 @@ plot(x, ddydxdx, label = 'ddydxdx')
 legend()
 show()
 
-f = lambda x: square(x)
+@vectorize
+def f(x):
+    return (x-pi)*(x+pi)/pi/pi
 y = f(x)
 dydx = grad(f)(x)
 ddydxdx = grad(grad(f))(x)
