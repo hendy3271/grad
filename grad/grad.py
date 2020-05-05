@@ -6,7 +6,9 @@ def grad(func, argnum=0):
             # wrap args[arg]
             args=list(args)
             var = args[argnum]
+            vectorized = False
             if isinstance(var, (list, tuple)):
+                vectorized = True
                 for i, v in enumerate(var):
                     var[i] = Variable(v)
             if isinstance(var, float):
@@ -17,21 +19,16 @@ def grad(func, argnum=0):
             raise TypeError
 
         # Foward pass
-        if getattr(func, '__isgrad__', False):
-            _, value = func(*args, **kwargs)
-        else:
-            value = func(*args, **kwargs)
+        value = func(*args, **kwargs)
 
         # Reverse pass
-        if isinstance(value, (list, tuple)):
+        if vectorized:
             gradient = []
             for vr, vl in zip(var, value):
                 gradient.append(differentiate(vl, vr))
         else:
             gradient = differentiate(value, var)
-
-        return value, gradient
-    dfunc.__isgrad__ = True
+        return gradient
     return dfunc
 
 def primitive(grads):

@@ -24,6 +24,4 @@ def vectorize(func):
         else:
             return vector
         return vector[0]
-        
-    vfunc.__vectorized__ = True
     return vfunc
