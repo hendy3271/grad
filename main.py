@@ -1,6 +1,6 @@
 from tester import tester
 from grad import primitive
-from math_wrap import *
+from grad.math import *
 
 @primitive([lambda *args: 2, lambda *args: -3])
 def var2(x, y):
