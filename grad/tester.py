@@ -14,7 +14,7 @@ def tester(y, x, h=1.e-6, name=None, n=1):
         _dydx = dydx_c(x)
 
         dydx = grad(y)
-        _, dydx_x = dydx(x)
+        dydx_x = dydx(x)
 
         
 
