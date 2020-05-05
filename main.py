@@ -2,7 +2,7 @@ from tester import tester
 from grad import primitive
 from grad.math import *
 
-@primitive([lambda *args: 2, lambda *args: -3])
+@primitive([lambda x, y: 2, lambda x, y: -3])
 def var2(x, y):
      return 2.*x - 3.*y
 
