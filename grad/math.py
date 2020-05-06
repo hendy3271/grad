@@ -1,8 +1,6 @@
 from math import *
 from .grad import primitive, simple_primitive
 
-min_, max_ = min, max
-
 sin_ = sin
 cos_ = cos
 tan_ = tan

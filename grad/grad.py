@@ -5,8 +5,7 @@ def grad(func, argnum=0):
         if isinstance(argnum, (int, float)):
             # trace args[argnum]
             args=list(args)
-            x = Variable(args[argnum])
-            args[argnum] = x
+            args[argnum] = x = Variable(args[argnum])
         else:
             raise TypeError
 
@@ -24,8 +23,7 @@ def primitive(gradients):
         return wrapped_func
     return wrapper
 
-def simple_primitive(func, gradients):
-    return primitive(gradients)(func)
+simple_primitive = lambda func, gradients: primitive(gradients)(func)
 
 def differentiate(y, x):
     if y is x:
