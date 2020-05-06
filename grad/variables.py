@@ -1,8 +1,8 @@
 method_diff = lambda operation: operation[:2] + 'd' + operation[2:]
 
-# log function for derivatives
+# log function for derivatives actually log|x|
 from math import log as log_
-log = lambda x, *args: 0. if abs(x) < 1e-10 else log_(x, *args)
+log = lambda x, *args: 0. if abs(x) < 1e-322 else log_(abs(x), *args)
 
 def operation_overload(method):
     def new_method(self, *args):     
