@@ -27,7 +27,7 @@ simple_primitive = lambda func, gradients: primitive(gradients)(func)
 
 def differentiate(y, x):
     if y is x:
-        # if I am x then dy/ds is actually dy/dx
+        # If I am x then asking for dy/dx is actually dx/dx
         return 1.
     elif not isinstance(y, Variable):
         return 0.
