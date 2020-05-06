@@ -1,14 +1,14 @@
 method_diff = lambda operation: operation[:2] + 'd' + operation[2:]
 
 def operation_overload(method):
-    def new_method(self, x):
-        parents = [self, x]
+    def new_method(self, *args):
+        parents = [self] + list(args)
         
-        value = getattr(self.super, method.__name__)(x)
+        value = getattr(self.super, method.__name__)(*args)
 
-        gradient = getattr(self, method_diff(method.__name__))()
+        gradients = getattr(self, method_diff(method.__name__))()
 
-        return Variable(value, parents=parents, gradients=(parents, gradient))
+        return Variable(value, parents=parents, gradients=gradients)
 
     return new_method
 
@@ -18,9 +18,9 @@ def method_overload(method):
         
         value = getattr(self.super, method.__name__)()
 
-        gradient = getattr(self, method_diff(method.__name__))()
+        gradients = getattr(self, method_diff(method.__name__))()
 
-        return Variable(value, parents=parents, gradients=(parents, gradient))
+        return Variable(value, parents=parents, gradients=gradients)
 
     return new_method
 
@@ -33,9 +33,10 @@ class Variable(float):
         d_parents, d_gradients = None, None
 
         if len(args) > 0:
-            if isinstance(args[0], Variable):
-                d_parents = [args[0]]
-                d_gradients = [[], [lambda *args: 1.]]
+            x = args[0]
+            if isinstance(x, Variable):
+                d_parents = [x]
+                d_gradients = [lambda x: 1.]
 
         self.parents = kwargs.pop('parents', d_parents)
         self.gradients = kwargs.pop('gradients', d_gradients)

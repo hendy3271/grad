@@ -31,44 +31,30 @@ def grad(func, argnum=0):
         return gradient
     return dfunc
 
-def primitive(grads):
+def primitive(gradients):
     def wrapper(func):
         def wrapped_func(*args):
-            value = func(*args)
-            gradients = []
-            parents = []
-            
-            for arg, gradient in zip(args, grads):
-                if isinstance(arg, Variable):
-                    parents.append(arg)
-                    gradients.append(gradient)
-
-            if len(parents) > 0 and len(args) > 0:
-                return Variable(value, parents=parents, operation='func', gradients=(args, gradients))
-            return value
+            if len(args) > 0:
+                return Variable(func(*args), parents=args, gradients=gradients)
+            return func(*args)
         return wrapped_func
     return wrapper
 
-def simple_primitive(func, grads):
-    return primitive(grads)(func)
-
-differential = lambda operation: operation[:2] + 'd' + operation[2:]
+def simple_primitive(func, gradients):
+    return primitive(gradients)(func)
 
 def differentiate(y, x, ds_dy=1.):
-    dy_dx = 0.
-    if not isinstance(y, Variable):
-        return 0.
-    elif y is x:
+    if y is x:
         return ds_dy
-    elif y.parents is None:
+    elif not isinstance(y, Variable) or y.parents is None or y.gradients is None:
         return 0.
+    
+    dy_dx = 0.
 
     # Note s is the intermim variable
-    args, gradients = y.gradients
-
-    for s, ds_da in zip(y.parents, gradients):
+    for s, ds_da in zip(y.parents, y.gradients):
         if isinstance(s, Variable):
             # dy/dx = dy/ds*ds/dx
-            dy_dx += ds_dy*differentiate(s, x, ds_da(*args))
+            dy_dx += ds_dy*differentiate(s, x, ds_da(*y.parents))
     
     return dy_dx
