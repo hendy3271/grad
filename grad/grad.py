@@ -50,10 +50,10 @@ def differentiate(y, x, dy_ds=1.):
     
     dy_dx = 0.
 
-    # Note s is the intermim variable
+    # Note s is the intermim variable/current parent
     for s, ds_da in zip(y.parents, y.gradients):
         if isinstance(s, Variable):
-            # dy/dx = dy/ds*ds/dx = dy/ds*ds/da*da/dx
+            # dy/dx = dy/ds*ds/dx = dy/ds*(ds/da*da/dx)
             dy_dx += dy_ds*differentiate(s, x, ds_da(*y.parents))
     
     return dy_dx
