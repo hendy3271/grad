@@ -3,32 +3,18 @@ from .variables import Variable
 def grad(func, argnum=0):
     def dfunc(*args, **kwargs):
         if isinstance(argnum, (int, float)):
-            # wrap args[arg]
+            # trace args[argnum]
             args=list(args)
-            var = args[argnum]
-            vectorized = False
-            if isinstance(var, (list, tuple)):
-                vectorized = True
-                for i, v in enumerate(var):
-                    var[i] = Variable(v)
-            if isinstance(var, float):
-                var = Variable(args[argnum])
-            args[argnum] = var
-            pass 
+            x = Variable(args[argnum])
+            args[argnum] = x
         else:
             raise TypeError
 
         # Foward pass
-        value = func(*args, **kwargs)
+        y = func(*args, **kwargs)
 
         # Reverse pass
-        if vectorized:
-            gradient = []
-            for vr, vl in zip(var, value):
-                gradient.append(differentiate(vl, vr))
-        else:
-            gradient = differentiate(value, var)
-        return gradient
+        return differentiate(y, x)
     return dfunc
 
 def primitive(gradients):
