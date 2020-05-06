@@ -45,7 +45,9 @@ def differentiate(y, x, dy_ds=1.):
     if y is x:
         # if I am x then dy/ds is actually dy/dx
         return dy_ds
-    elif not isinstance(y, Variable) or y.parents is None or y.gradients is None:
+    elif not isinstance(y, Variable):
+        return 0.
+    elif y.parents is None or y.gradients is None:
         return 0.
     
     dy_dx = 0.
