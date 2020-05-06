@@ -1,29 +1,11 @@
 method_diff = lambda operation: operation[:2] + 'd' + operation[2:]
 
 def operation_overload(method):
-    def new_method(self, *args):
-        parents = [self] + list(args)
-        
+    def new_method(self, *args):     
         value = getattr(self.super, method.__name__)(*args)
-
         gradients = getattr(self, method_diff(method.__name__))()
-
-        return Variable(value, parents=parents, gradients=gradients)
-
+        return Variable(value, parents=[self] + list(args), gradients=gradients)
     return new_method
-
-def method_overload(method):
-    def new_method(self):
-        parents = [self]
-        
-        value = getattr(self.super, method.__name__)()
-
-        gradients = getattr(self, method_diff(method.__name__))()
-
-        return Variable(value, parents=parents, gradients=gradients)
-
-    return new_method
-
 
 class Variable(float):
     def __new__(self, *args, **kwargs):
@@ -140,11 +122,11 @@ class Variable(float):
         from math import log
         return [lambda a, b: b**(a)*log(b), lambda a, b: a*b**(a-1)]
 
-    @method_overload
+    @operation_overload
     def __neg__(self): pass
-    @method_overload
+    @operation_overload
     def __pos__(self): pass
-    @method_overload
+    @operation_overload
     def __abs__(self): pass
 
     def __dneg__(self):
