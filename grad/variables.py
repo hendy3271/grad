@@ -153,7 +153,4 @@ class Variable(float):
         # x = a
         # dx/da = 1 if a > 0 else -1
         return [lambda a: 1. if a > 0 else -1.]
-
-    def __str__(self):
-        return '_' + super().__str__()
     pass
