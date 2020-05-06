@@ -59,7 +59,9 @@ Now differentiate will first check if `y` is at the final value in which case it
 
 Otherwise, for each of the parents the derivative of the parent is requested and mutliplied by the current locations derivative. For example,
 
-`a = 1.`
-`b = 2*a`
+``` python
+a = 1.
+b = 2*a
+```
 
-tracing this back from `b` we get two parents `[2, 1]` enter into `2` which is actually `a` then we know that this is `x` (ie what we are looking for) so return the gradient.
+tracing this back from `b` we get two parents `[2, 1]` enter into `2` which is actually `a` then we know that this is `x` (ie what we are looking for) so return the `da/da` which is `1.`. Then in `b` we multiply `ds/dx` where `s=a` and `x=a` by `dy/ds` to get `dy/da` (`y = b` in this level of recursion) so by the chain rule we get `db/da` which is what we are looking for.
