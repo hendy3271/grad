@@ -38,8 +38,7 @@ def primitive(grads):
             gradients = []
             parents = []
             
-            from itertools import count
-            for i, arg, gradient in zip(count(), args, grads):
+            for arg, gradient in zip(args, grads):
                 if isinstance(arg, Variable):
                     parents.append(arg)
                     gradients.append(gradient)

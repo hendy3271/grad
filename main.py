@@ -31,11 +31,12 @@ legend()
 show()
 
 @vectorize
-def f(x):
+def f1(x):
     return (x-pi)*(x+pi)/pi/pi
-y = f(x)
-dydx = grad(f)(x)
-ddydxdx = grad(grad(f))(x)
+    
+y = f1(x)
+dydx = grad(f1)(x)
+ddydxdx = grad(grad(f1))(x)
 
 plot(x, y, label = 'y')
 plot(x, dydx, label = 'dydx')

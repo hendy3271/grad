@@ -97,7 +97,8 @@ class Variable(float):
         # a, b are parent one and two
         # x = a * b
         # dx/da = b, dx/db = a
-        gradients = [self.parents[1], self.parents[0]]
+        a, b = self.parents[0], self.parents[1]
+        gradients = [b, a]
         return zip(self.parents, gradients)
 
     def __dtruediv__(self):
@@ -166,8 +167,6 @@ class Variable(float):
         # a is parent
         # x = -a
         # dx/da = -1
-        a = self.parents[0]
-        from math import log
         gradients = [-1.]
         return zip(self.parents, gradients)
     
@@ -176,8 +175,6 @@ class Variable(float):
         # a is parent
         # x = +a
         # dx/da = 1
-        a = self.parents[0]
-        from math import log
         gradients = [1.]
         return zip(self.parents, gradients)
 
@@ -187,7 +184,6 @@ class Variable(float):
         # x = a
         # dx/da = 1 if a > 0 else -1
         a = self.parents[0]
-        from math import log
         gradients = [1. if a > 0 else -1.]
         return zip(self.parents, gradients)
 
