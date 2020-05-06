@@ -35,20 +35,22 @@ print(differentiate(b, a)) # find db/da
 When differentiate is called it aims to find the 'db/da' which means that it starts at b and traces backwards until it finds `a` (note: there can be many paths back to `a` this is handled by recursion!).
 
 ```python
-def differentiate(y, x, dy_ds=1.):
+def differentiate(y, x):
     if y is x:
         # if I am x then dy/ds is actually dy/dx
-        return dy_ds
-    elif not isinstance(y, Variable) or y.parents is None or y.gradients is None:
+        return 1.
+    elif not isinstance(y, Variable):
+        return 0.
+    elif y.parents is None or y.gradients is None:
         return 0.
     
     dy_dx = 0.
 
     # Note s is the intermim variable/current parent
-    for s, ds_da in zip(y.parents, y.gradients):
+    for s, dy_ds in zip(y.parents, y.gradients):
         if isinstance(s, Variable):
-            # dy/dx = dy/ds*ds/dx = dy/ds*(ds/da*da/dx)
-            dy_dx += dy_ds*differentiate(s, x, ds_da(*y.parents))
+            # dy/dx = dy/ds*ds/dx
+            dy_dx += dy_ds(*y.parents) * differentiate(s, x)
     
     return dy_dx
 ```
@@ -60,4 +62,4 @@ Otherwise, for each of the parents the derivative of the parent is requested and
 `a = 1.`
 `b = 2*a`
 
-tracing this back from `b` we get two parents `[2, 1]`
+tracing this back from `b` we get two parents `[2, 1]` enter into `2` which is actually `a` then we know that this is `x` (ie what we are looking for) so return the gradient.
