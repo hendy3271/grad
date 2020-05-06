@@ -95,6 +95,7 @@ class Variable(float):
         return [lambda a, b: b*a**(b-1), lambda a, b: a**(b)*log(b)]
 
     def __dradd__(self):
+        # refer to __dadd__
         return self.__dadd__()
 
     def __drsub__(self):
@@ -105,6 +106,7 @@ class Variable(float):
         return [lambda a, b: -1., lambda a, b: 1.]
 
     def __drmul__(self):
+        # refer to __dmul__
         return self.__dmul__()
 
     def __drtruediv__(self):
