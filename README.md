@@ -35,7 +35,7 @@ print(differentiate(b, a)) # find db/da
 When differentiate is called it aims to find the 'db/da' which means that it starts at b and traces backwards until it finds `a` (note: there can be many paths back to `a` this is handled by recursion!).
 
 ```python
-def differentiate(y, x):
+def derivative(y, x):
     if y is x:
         # If I am x then asking for dy/dx is actually dx/dx
         return 1.
@@ -55,7 +55,7 @@ def differentiate(y, x):
     return dy_dx
 ```
 
-Now differentiate will first check if `y` is at the final value in which case it returns the derivative. Otherwise, the function check that value recieved is traceable (ie a Variable). If the current value is either non-traceable or has no parents then the derivative is 0 (note: this could be in one of the recursion branches) so 0 is returned.
+Now `derivative` will first check if `y` is at the final value in which case it returns the derivative. Otherwise, the function check that value recieved is traceable (ie a Variable). If the current value is either non-traceable or has no parents then the derivative is 0 (note: this could be in one of the recursion branches) so 0 is returned.
 
 Otherwise, for each of the parents the derivative of the parent is requested and mutliplied by the current locations derivative. For example,
 
