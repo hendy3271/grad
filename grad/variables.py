@@ -1,5 +1,9 @@
 method_diff = lambda operation: operation[:2] + 'd' + operation[2:]
 
+# log function for derivatives
+from math import log as log_
+log = lambda x, *args: 0. if abs(x) < 1e-10 else log_(x, *args)
+
 def operation_overload(method):
     def new_method(self, *args):     
         func = getattr(self.super, method.__name__)
@@ -91,7 +95,6 @@ class Variable(float):
         # a, b are parent one and two
         # x = a ^ b
         # dx/da = b*a^(b-1), dx/db = a^b*ln(a)
-        from math import log
         return [lambda a, b: b*a**(b-1), lambda a, b: a**(b)*log(b)]
 
     def __dradd__(self):
@@ -121,7 +124,6 @@ class Variable(float):
         # a, b are parent one and two
         # x = b ^ a
         # dx/da = b^a*ln(b), dx/db = a*b^(a-1)
-        from math import log
         return [lambda a, b: b**(a)*log(b), lambda a, b: a*b**(a-1)]
 
     @operation_overload
