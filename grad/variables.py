@@ -1,15 +1,14 @@
+method_diff = lambda operation: operation[:2] + 'd' + operation[2:]
+
 def operation_overload(method):
     def new_method(self, x):
-        parents = [self]
+        parents = [self, x]
         
         value = getattr(self.super, method.__name__)(x)
 
-        if isinstance(x, Variable):
-            parents.append(x)
-        else:
-            parents.append(float(x))
+        gradient = getattr(self, method_diff(method.__name__))()
 
-        return Variable(value, parents=parents, operation=method.__name__)
+        return Variable(value, parents=parents, gradients=(parents, gradient))
 
     return new_method
 
@@ -19,7 +18,9 @@ def method_overload(method):
         
         value = getattr(self.super, method.__name__)()
 
-        return Variable(value, parents=parents, operation=method.__name__)
+        gradient = getattr(self, method_diff(method.__name__))()
+
+        return Variable(value, parents=parents, gradients=(parents, gradient))
 
     return new_method
 
@@ -29,16 +30,14 @@ class Variable(float):
         return super().__new__(self, *args)
 
     def __init__(self, *args, **kwargs):
-        d_parents, d_operation, d_gradients = None, None, None
+        d_parents, d_gradients = None, None
 
         if len(args) > 0:
             if isinstance(args[0], Variable):
                 d_parents = [args[0]]
-                d_operation = 'func'
                 d_gradients = [[], [lambda *args: 1.]]
 
         self.parents = kwargs.pop('parents', d_parents)
-        self.operation = kwargs.pop('operation', d_operation)
         self.gradients = kwargs.pop('gradients', d_gradients)
         self.super = super()
         self.super.__init__()
@@ -81,45 +80,36 @@ class Variable(float):
         # a, b are parent one and two
         # x = a + b
         # dx/da = 1, dx/db = 1
-        gradients = [1., 1.]
-        return zip(self.parents, gradients)
+        return [lambda a, b: 1., lambda b, a: 1.]
 
     def __dsub__(self):
         # x is this variable
         # a, b are parent one and two
         # x = a - b
         # dx/da = 1, dx/db = -1
-        gradients = [1., -1.]
-        return zip(self.parents, gradients)
+        return [lambda a, b: 1., lambda a, b: -1.]
 
     def __dmul__(self):
         # x is this variable
         # a, b are parent one and two
         # x = a * b
         # dx/da = b, dx/db = a
-        a, b = self.parents[0], self.parents[1]
-        gradients = [b, a]
-        return zip(self.parents, gradients)
+        return [lambda a, b: b , lambda a, b: a]
 
     def __dtruediv__(self):
         # x is this variable
         # a, b are parent one and two
         # x = a / b
         # dx/da = 1/b, dx/db = -a/b/b
-        a, b = self.parents[0], self.parents[1]
-        gradients = [1/b, -a/b/b]
-        return zip(self.parents, gradients)
+        return [lambda a, b: 1/b, lambda a, b: -a/b/b]
 
     def __dpow__(self):
         # x is this variable
         # a, b are parent one and two
         # x = a ^ b
         # dx/da = b*a^(b-1), dx/db = a^b*ln(a)
-        a, b = self.parents[0], self.parents[1]
         from math import log
-        log_b = 0. if abs(b) < 1e-10 else log(b)
-        gradients = [b*a**(b-1), a**(b)*log_b]
-        return zip(self.parents, gradients)
+        return [lambda a, b: b*a**(b-1), lambda a, b: a**(b)*log(b)]
 
     def __dradd__(self):
         return self.__dadd__()
@@ -128,9 +118,8 @@ class Variable(float):
         # x is this variable
         # a, b are parent one and two
         # x = b - a
-        # dx/da = 1, dx/db = -1
-        gradients = [-1., 1.]
-        return zip(self.parents, gradients)
+        # dx/da = -1, dx/db = 1
+        return [lambda a, b: -1., lambda a, b: 1.]
 
     def __drmul__(self):
         return self.__dmul__()
@@ -140,20 +129,15 @@ class Variable(float):
         # a, b are parent one and two
         # x = b / a
         # dx/da = -b/a/a, dx/db = 1/a
-        a, b = self.parents[0], self.parents[1]
-        gradients = [-b/a/a, 1/a]
-        return zip(self.parents, gradients)
+        return [lambda a, b: -b/a/a, lambda a, b: 1/a]
     
     def __drpow__(self):
         # x is this variable
         # a, b are parent one and two
         # x = b ^ a
         # dx/da = b^a*ln(b), dx/db = a*b^(a-1)
-        a, b = self.parents[0], self.parents[1]
         from math import log
-        log_b = 0. if abs(b) < 1e-10 else log(b)
-        gradients = [b**(a)*log_b, a*b**(a-1)]
-        return zip(self.parents, gradients)
+        return [lambda a, b: b**(a)*log(b), lambda a, b: a*b**(a-1)]
 
     @method_overload
     def __neg__(self): pass
@@ -167,25 +151,21 @@ class Variable(float):
         # a is parent
         # x = -a
         # dx/da = -1
-        gradients = [-1.]
-        return zip(self.parents, gradients)
+        return [lambda a: -1.]
     
     def __dpos__(self):
         # x is this variable
         # a is parent
         # x = +a
         # dx/da = 1
-        gradients = [1.]
-        return zip(self.parents, gradients)
+        return [lambda a: 1.]
 
     def __dabs__(self):
         # x is this variable
         # a is parent
         # x = a
         # dx/da = 1 if a > 0 else -1
-        a = self.parents[0]
-        gradients = [1. if a > 0 else -1.]
-        return zip(self.parents, gradients)
+        return [lambda a: 1. if a > 0 else -1.]
 
     def __str__(self):
         return '_' + super().__str__()

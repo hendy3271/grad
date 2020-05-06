@@ -54,32 +54,21 @@ def simple_primitive(func, grads):
 
 differential = lambda operation: operation[:2] + 'd' + operation[2:]
 
-def differentiate(variable, source, gradient=1.):
-    accumulation = 0.
-    if not isinstance(variable, Variable):
+def differentiate(y, x, ds_dy=1.):
+    dy_dx = 0.
+    if not isinstance(y, Variable):
         return 0.
-    elif variable is source:
-        return gradient
-    elif variable.operation is None:
+    elif y is x:
+        return ds_dy
+    elif y.parents is None:
         return 0.
-    elif not isinstance(variable.operation, str):
-        return 0.
+
+    # Note s is the intermim variable
+    args, gradients = y.gradients
+
+    for s, ds_da in zip(y.parents, gradients):
+        if isinstance(s, Variable):
+            # dy/dx = dy/ds*ds/dx
+            dy_dx += ds_dy*differentiate(s, x, ds_da(*args))
     
-    operation = variable.operation
-
-    if operation == 'func':
-        args, gradients = variable.gradients
-        iterable = zip(variable.parents, gradients)
-
-        for parent, grd in iterable:
-            if isinstance(parent, Variable):
-                accumulation += gradient*differentiate(parent, source, grd(*args))
-    else:
-        operation = differential(operation)
-        iterable = getattr(variable, operation)()
-
-        for parent, grd in iterable:
-            if isinstance(parent, Variable):
-                accumulation += gradient*differentiate(parent, source, grd)
-    
-    return accumulation
+    return dy_dx
