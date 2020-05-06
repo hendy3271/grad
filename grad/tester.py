@@ -23,4 +23,4 @@ def tester(y, x, h=1.e-6, name=None, n=1):
         print('{s} = {x}, {s} ~ {a} : error = {e}'.format(s=s, e=error, x=dydx_x, a=_dydx))
         assert error < e
         y = dydx
-        y_ = lambda x: dydx(x)[1]
+        y_ = lambda x: dydx(x)
