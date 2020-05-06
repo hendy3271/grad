@@ -2,9 +2,9 @@ method_diff = lambda operation: operation[:2] + 'd' + operation[2:]
 
 def operation_overload(method):
     def new_method(self, *args):     
-        value = getattr(self.super, method.__name__)(*args)
+        func = getattr(self.super, method.__name__)
         gradients = getattr(self, method_diff(method.__name__))()
-        return Variable(value, parents=[self] + list(args), gradients=gradients)
+        return Variable(func(*args), parents=[self] + list(args), gradients=gradients)
     return new_method
 
 class Variable(float):

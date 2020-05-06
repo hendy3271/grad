@@ -34,18 +34,17 @@ def grad(func, argnum=0):
 def primitive(gradients):
     def wrapper(func):
         def wrapped_func(*args):
-            if len(args) > 0:
-                return Variable(func(*args), parents=args, gradients=gradients)
-            return func(*args)
+            return Variable(func(*args), parents=args, gradients=gradients) if len(args) > 0 else func(*args) 
         return wrapped_func
     return wrapper
 
 def simple_primitive(func, gradients):
     return primitive(gradients)(func)
 
-def differentiate(y, x, ds_dy=1.):
+def differentiate(y, x, dy_ds=1.):
     if y is x:
-        return ds_dy
+        # if I am x then dy/ds is actually dy/dx
+        return dy_ds
     elif not isinstance(y, Variable) or y.parents is None or y.gradients is None:
         return 0.
     
@@ -54,7 +53,7 @@ def differentiate(y, x, ds_dy=1.):
     # Note s is the intermim variable
     for s, ds_da in zip(y.parents, y.gradients):
         if isinstance(s, Variable):
-            # dy/dx = dy/ds*ds/dx
-            dy_dx += ds_dy*differentiate(s, x, ds_da(*y.parents))
+            # dy/dx = dy/ds*ds/dx = dy/ds*ds/da*da/dx
+            dy_dx += dy_ds*differentiate(s, x, ds_da(*y.parents))
     
     return dy_dx
