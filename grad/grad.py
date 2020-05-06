@@ -41,10 +41,10 @@ def primitive(gradients):
 def simple_primitive(func, gradients):
     return primitive(gradients)(func)
 
-def differentiate(y, x, dy_ds=1.):
+def differentiate(y, x):
     if y is x:
         # if I am x then dy/ds is actually dy/dx
-        return dy_ds
+        return 1.
     elif not isinstance(y, Variable):
         return 0.
     elif y.parents is None or y.gradients is None:
@@ -53,9 +53,9 @@ def differentiate(y, x, dy_ds=1.):
     dy_dx = 0.
 
     # Note s is the intermim variable/current parent
-    for s, ds_da in zip(y.parents, y.gradients):
+    for s, dy_ds in zip(y.parents, y.gradients):
         if isinstance(s, Variable):
-            # dy/dx = dy/ds*ds/dx = dy/ds*(ds/da*da/dx)
-            dy_dx += dy_ds*differentiate(s, x, ds_da(*y.parents))
+            # dy/dx = dy/ds*ds/dx
+            dy_dx += dy_ds(*y.parents) * differentiate(s, x)
     
     return dy_dx
