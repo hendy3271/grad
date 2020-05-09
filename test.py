@@ -9,8 +9,17 @@ N = 3
 x = 2.
 x_2 = 0.5
 
+y = lambda x: 2*x*3
+tester(y, x, h=1.e-6, name='mult', n=N)
+
+y = lambda x: 1+x+1
+tester(y, x, h=1.e-6, name='add', n=N)
+
 y = lambda x: x**2
-tester(y, x, h=1.e-6, name='square', n=N)
+tester(y, x, h=1.e-6, name='pow(x, 2)', n=N)
+
+y = lambda x: 2**x
+tester(y, x, h=1.e-6, name='pow(2, x)', n=N)
 
 y = lambda x: abs(x)
 tester(y, x, h=1.e-6, name='abs', n=N)
