@@ -1,4 +1,5 @@
 from .variables import Variable
+from .vector import vectorize
 
 def grad(func, argnum=0):
     def dfunc(*args, **kwargs):
@@ -16,6 +17,8 @@ def grad(func, argnum=0):
         return derivatives(y, x)
     return dfunc
 
+elementwise_grad = lambda f: vectorize(grad(f))
+
 def primitive(gradients):
     def wrapper(func):
         def wrapped_func(*args):
@@ -27,7 +30,7 @@ simple_primitive = lambda func, gradients: primitive(gradients)(func)
 
 def derivative(y, x):
     if y is x:
-        # If I am x then asking for dy/dx is actually dx/dx
+        # If I am x then asking for dy/dx is actually dx/dx = 1.0
         return 1.
     elif not isinstance(y, Variable):
         return 0.
