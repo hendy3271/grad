@@ -3,10 +3,15 @@ from .vector import vectorize
 
 def grad(func, argnum=0):
     def dfunc(*args, **kwargs):
+        args=list(args)
         if isinstance(argnum, (int, float)):
             # trace args[argnum]
-            args=list(args)
             args[argnum] = x = Variable(args[argnum])
+        elif isinstance(argnum, (list, tuple)):
+            x = []
+            for arg in argnum:
+                args[arg] = Variable(args[arg])
+                x.append(args[arg])
         else:
             raise TypeError
 
