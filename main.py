@@ -6,7 +6,7 @@ from matplotlib.pyplot import plot, show, legend
 
 x = list(linspace(-pi, pi, 100))
 
-relu = vectorize(lambda x: max(x, 0.))
+relu = vectorize(lambda x: max(x, 0.1*x))
 
 tanh, tanh_ = vectorize(tanh), tanh
 exp, exp_ = vectorize(exp), exp
@@ -27,7 +27,7 @@ show()
 def f1(x):
     y = 0.
     m = 1.
-    for n in range(20):
+    for n in range(10):
         m *= n if n > 0 else 1
         y += x**n/m
     return y
