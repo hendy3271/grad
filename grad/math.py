@@ -16,7 +16,9 @@ sqrt_ = sqrt
 sqrt = simple_primitive(sqrt_, [lambda x: 0.5/sqrt(x)])
 
 log_ = log
-log = simple_primitive(log_, [lambda x, base=exp(1): 1/(log(base)*x), lambda x, base=exp(1): log(x)/(base*log(base)**2)])
+log = simple_primitive(log_, [
+            lambda x, base=exp(1): 1/(log(base)*x),
+            lambda x, base=exp(1): log(x)/(base*log(base)**2)])
 
 asin_ = asin
 acos_ = acos
