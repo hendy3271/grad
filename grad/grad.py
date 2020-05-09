@@ -7,11 +7,18 @@ def grad(func, argnum=0):
         if isinstance(argnum, (int, float)):
             # trace args[argnum]
             args[argnum] = x = Variable(args[argnum])
+        elif isinstance(argnum, str):
+            # trace args[argnum]
+            kwargs[argnum] = x = Variable(kwargs[argnum])
         elif isinstance(argnum, (list, tuple)):
             x = []
             for arg in argnum:
-                args[arg] = Variable(args[arg])
-                x.append(args[arg])
+                if isinstance(arg, (int, float)):
+                    args[arg] = Variable(args[arg])
+                    x.append(args[arg])
+                elif isinstance(arg, str):
+                    kwargs[arg] = Variable(kwargs[arg])
+                    x.append(kwargs[arg])
         else:
             raise TypeError
 
