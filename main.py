@@ -1,8 +1,21 @@
 import test
-from grad import elementwise_grad as grad
 from grad.math import sin, tanh, exp, pi
 from grad.vector import vectorize, linspace
 from matplotlib.pyplot import plot, show, legend
+
+from grad import grad, Variable, derivatives
+
+f = lambda x, y=2., z=3.: x**2 + 3*y - 2*z
+x = Variable(0.3)
+y = Variable(0.2)
+
+z = f(x, y)
+
+print(derivatives(z, [x, y]))
+df_dxy = grad(f, argnum=[0, 1, 'z'])
+print(df_dxy(0.3, 0.2, z=3.))
+
+from grad import elementwise_grad as grad
 
 x = list(linspace(-pi, pi, 100))
 
